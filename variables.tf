@@ -1,3 +1,4 @@
+# AWS Region Configuration
 variable "aws_region" {
   type = string
   description = "AWS Region to use for main resouces"
@@ -5,6 +6,7 @@ variable "aws_region" {
   
 }
 
+# VPC Network Configuration
 variable "vcp_cidr" {
   type = string
   description = "Main VPC CIDR value"
@@ -12,6 +14,7 @@ variable "vcp_cidr" {
   
 }
 
+# Subnet Configuration
 variable "subnet_cidr" {
   type = string
   description = "Subnet CIDR Value"
@@ -19,18 +22,21 @@ variable "subnet_cidr" {
   
 }
 
+# Public IP Mapping Configuration
 variable "map_public_ip" {
   type = bool
   description = "Set the Mapping of public ip on launch"
   
 }
 
+# Network Port Configuration
 variable "http_port" {
   type = number
   description = "HTTP Port Number"
   
 }
 
+# EC2 Instance Configuration
 variable "instance" {
   type = string
   description = "type of EC2 instance for the web machine"
