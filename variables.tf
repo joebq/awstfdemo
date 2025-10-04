@@ -2,7 +2,7 @@
 variable "aws_region" {
   type = string
   description = "AWS Region to use for main resouces"
-  default = "east-us-1"
+  default = "us-east-1"
   
 }
 
@@ -26,6 +26,7 @@ variable "subnet_cidr" {
 variable "map_public_ip" {
   type = bool
   description = "Set the Mapping of public ip on launch"
+  default = true
   
 }
 
