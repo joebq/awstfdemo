@@ -66,20 +66,20 @@ resource "aws_security_group" "sg_public" {
   vpc_id      = aws_vpc.main_vpc.id # Associate with the main VPC
 
   # Outbound rule - Allow HTTP traffic to anywhere
-  ingress = {
+  ingress {
     from_port  = 80            # HTTP port
     to_port    = 80            # HTTP port
     protocol   = "tcp"         # TCP protocol
-    cidr_block = ["0.0.0.0/0"] # Allow traffic to anywhere on the internet
+    cidr_blocks = ["0.0.0.0/0"] # Allow traffic to anywhere on the internet
   }
 
   # Inbound rule - Allow all traffic from anywhere (WARNING: Very permissive)
   # Note: This is not recommended for production environments
-  egress = {
+  egress {
     from_port  = 0             # All ports
     to_port    = 0             # All ports
     protocol   = "-1"          # All protocols
-    cidr_block = ["0.0.0.0/0"] # Allow traffic from anywhere on the internet
+    cidr_blocks = ["0.0.0.0/0"] # Allow traffic from anywhere on the internet
 
   }
 
