@@ -17,7 +17,7 @@ terraform {
 # AWS Provider configuration
 # Configures the AWS provider with the target region
 provider "aws" {
-  region = "us-east-1" # Deploy resources in US East (N. Virginia) region
+  region = var.aws_region # Deploy resources in US East (N. Virginia) region
 
 }
 
@@ -30,7 +30,7 @@ data "aws_ssm_parameter" "aws_ami" {
 # Main VPC (Virtual Private Cloud)
 # Creates an isolated network environment in AWS
 resource "aws_vpc" "main_vpc" {
-  cidr_block           = "10.0.0.0/16" # IP address range for the VPC (65,536 IP addresses)
+  cidr_block           = var.vcp_cidr # IP address range for the VPC (65,536 IP addresses)
   enable_dns_hostnames = true
   tags = {
     Name = "Main" # Tag for identification in AWS console
@@ -49,8 +49,8 @@ resource "aws_internet_gateway" "ig" {
 # Subnet for resources that need internet access (web servers, load balancers, etc.)
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.main_vpc.id # Reference to the main VPC
-  cidr_block              = "10.0.0.0/24"       # Subnet IP range (256 IP addresses)
-  map_public_ip_on_launch = true
+  cidr_block              = var.subnet_cidr       # Subnet IP range (256 IP addresses)
+  map_public_ip_on_launch = var.map_public_ip
 
   tags = {
     Name = "Public" # Tag to identify this as the public subnet
@@ -65,18 +65,18 @@ resource "aws_security_group" "sg_public" {
   description = "Allow Internet Access"
   vpc_id      = aws_vpc.main_vpc.id # Associate with the main VPC
 
-  # Inbound rule - Allow SSH traffic from anywhere
-  ingress {
-    from_port   = 22            # SSH port (note: SSH uses port 22, not 21)
-    to_port     = 22            # SSH port
-    protocol    = "tcp"         # TCP protocol
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH from anywhere (consider restricting for security)
-  }
+  # # Inbound rule - Allow SSH traffic from anywhere
+  # ingress {
+  #   from_port   = 22            # SSH port (note: SSH uses port 22, not 21)
+  #   to_port     = 22            # SSH port
+  #   protocol    = "tcp"         # TCP protocol
+  #   cidr_blocks = ["0.0.0.0/0"] # Allow SSH from anywhere (consider restricting for security)
+  # }
 
   # Outbound rule - Allow HTTP traffic to anywhere
   ingress {
-    from_port  = 80            # HTTP port
-    to_port    = 80            # HTTP port
+    from_port  = var.http_port            # HTTP port
+    to_port    = var.http_port            # HTTP port
     protocol   = "tcp"         # TCP protocol
     cidr_blocks = ["0.0.0.0/0"] # Allow traffic to anywhere on the internet
   }
@@ -125,7 +125,7 @@ resource "aws_route_table_association" "route_tb_association" {
 # Creates a virtual machine in the public subnet with nginx web server
 resource "aws_instance" "web" {
   ami                         = nonsensitive(data.aws_ssm_parameter.aws_ami.value) # Use latest Amazon Linux 2 AMI
-  instance_type               = "t2.micro"                                         # Small instance type (1 vCPU, 1 GB RAM) - Free tier eligible
+  instance_type               = var.instance                                         # Small instance type (1 vCPU, 1 GB RAM) - Free tier eligible
   vpc_security_group_ids      = [aws_security_group.sg_public.id]                  # Apply public security group for internet access
   subnet_id                   = aws_subnet.public_subnet.id                        # Deploy in the public subnet
   user_data_replace_on_change = true                                               # Force instance replacement when user_data changes
