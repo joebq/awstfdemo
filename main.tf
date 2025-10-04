@@ -65,6 +65,14 @@ resource "aws_security_group" "sg_public" {
   description = "Allow Internet Access"
   vpc_id      = aws_vpc.main_vpc.id # Associate with the main VPC
 
+  # Inbound rule - Allow SSH traffic from anywhere
+  ingress {
+    from_port   = 22            # SSH port (note: SSH uses port 22, not 21)
+    to_port     = 22            # SSH port
+    protocol    = "tcp"         # TCP protocol
+    cidr_blocks = ["0.0.0.0/0"] # Allow SSH from anywhere (consider restricting for security)
+  }
+
   # Outbound rule - Allow HTTP traffic to anywhere
   ingress {
     from_port  = 80            # HTTP port
@@ -125,8 +133,10 @@ resource "aws_instance" "web" {
   # Bootstrap script to install and start nginx web server
   # Runs automatically when the instance first starts
   user_data = <<EOF
+  #! /bin/bash
   sudo amazon-linux-extras install -y nginx1
-  sudo service start nginx
+  sudo systemctl start nginx
+  sudo systemctl enable nginx
   EOF
 
 }
