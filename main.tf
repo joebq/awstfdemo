@@ -126,7 +126,7 @@ resource "aws_instance" "web" {
   # Runs automatically when the instance first starts
   user_data = <<EOF
   sudo amazon-linux-extras install -y nginx1
-  sudo services start nginx
+  sudo service start nginx
   EOF
 
 }
