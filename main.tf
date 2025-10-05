@@ -1,19 +1,6 @@
 # Terraform configuration for AWS infrastructure
 # This configuration creates a VPC with public subnet, security group, and related resources
 
-# Terraform configuration block
-# Specifies minimum Terraform version and required providers
-terraform {
-  required_version = ">= 1.13.0" # Minimum Terraform version required
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws" # AWS provider from HashiCorp
-      version = "~>6.0"         # AWS provider version constraint
-    }
-
-  }
-}
-
 # AWS Provider configuration
 # Configures the AWS provider with the target region
 provider "aws" {
