@@ -2,7 +2,7 @@
 # This can be used to access the web server from the internet
 output "instance_instance_public_dns" {
   description = "Public DNS hostname for EC2 instance"
-  value       = aws_instance.web.public_dns
+  value       = "http://${aws_instance.web.public_dns}:${var.http_port}"
 
 
 }
